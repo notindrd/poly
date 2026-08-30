@@ -51,6 +51,9 @@ let selSubDub    = 'sub';
 let episodes     = [];
 let anilistId    = null;
 let totalAnimeEps = 0;
+let trendingIndex = 0;
+let trendingTimer = null;
+let trendingCount = 0;
 
 /* ═══════════════════════════
    BOOT
@@ -65,6 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchContent();
   fetchTrending();
 
+  document.getElementById('trendingPrev').onclick = () => moveTrending(-1);
+  document.getElementById('trendingNext').onclick = () => moveTrending(1);
+  document.getElementById('trendingCarousel').addEventListener('mouseenter', pauseTrending);
+  document.getElementById('trendingCarousel').addEventListener('mouseleave', startTrending);
   document.getElementById('nextBtn').onclick = () => { page++; scrollTo(0,0); fetchContent(); };
   document.getElementById('prevBtn').onclick = () => { if(page>1){ page--; scrollTo(0,0); fetchContent(); } };
   document.getElementById('playerModal').addEventListener('click', e => { if(e.target===e.currentTarget) closePlayer(); });
@@ -167,7 +174,11 @@ function resetAll() {
 ═══════════════════════════ */
 async function fetchTrending() {
   const row = document.getElementById('trendingRow');
+  stopTrending();
+  trendingIndex = 0;
+  trendingCount = 0;
   row.innerHTML = '';
+  document.getElementById('trendingDots').innerHTML = '';
   try {
     let items = [];
     if (activeTab === 'anime') {
@@ -199,8 +210,81 @@ async function fetchTrending() {
       el.onclick = () => item._type==='anime' ? openAnimePlayer(item._raw) : openPlayer(item._raw, item._type);
       row.appendChild(el);
     });
+    trendingCount = items.length;
+    buildTrendingDots();
+    updateTrending();
+    startTrending();
   } catch(e) { row.innerHTML = ''; }
 }
+
+function buildTrendingDots() {
+  const dots = document.getElementById('trendingDots');
+  dots.innerHTML = Array.from({length: getTrendingMaxIndex() + 1}, (_, i) =>
+    `<button class="trending-dot${i===0?' active':''}" aria-label="Show trending slide ${i+1}" onclick="goToTrending(${i})"></button>`
+  ).join('');
+}
+
+function getTrendingMaxIndex() {
+  const viewport = document.querySelector('.trending-viewport');
+  const card = document.querySelector('.trending-card');
+  if (!viewport || !card || !trendingCount) return 0;
+  const row = document.getElementById('trendingRow');
+  const gap = parseFloat(getComputedStyle(row).gap || 0);
+  const visible = Math.max(1, Math.floor((viewport.clientWidth + gap) / (card.getBoundingClientRect().width + gap)));
+  return Math.max(0, trendingCount - visible);
+}
+
+function getTrendingStep() {
+  const card = document.querySelector('.trending-card');
+  const row = document.getElementById('trendingRow');
+  if (!card) return 0;
+  return card.getBoundingClientRect().width + parseFloat(getComputedStyle(row).gap || 0);
+}
+
+function updateTrending() {
+  const row = document.getElementById('trendingRow');
+  if (!row || !trendingCount) return;
+  trendingIndex = Math.min(trendingIndex, getTrendingMaxIndex());
+  row.style.transform = `translateX(-${trendingIndex * getTrendingStep()}px)`;
+  document.querySelectorAll('.trending-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === trendingIndex);
+  });
+}
+
+function goToTrending(index) {
+  if (!trendingCount) return;
+  const maxIndex = getTrendingMaxIndex();
+  trendingIndex = (index + maxIndex + 1) % (maxIndex + 1);
+  updateTrending();
+  startTrending();
+}
+
+function moveTrending(direction) {
+  goToTrending(trendingIndex + direction);
+}
+
+function startTrending() {
+  stopTrending();
+  if (trendingCount > 1) trendingTimer = setInterval(() => moveTrending(1), 4800);
+}
+
+function pauseTrending() {
+  if (trendingTimer) {
+    clearInterval(trendingTimer);
+    trendingTimer = null;
+  }
+}
+
+function stopTrending() {
+  pauseTrending();
+}
+
+window.addEventListener('resize', () => {
+  const previousMax = document.querySelectorAll('.trending-dot').length - 1;
+  const nextMax = getTrendingMaxIndex();
+  if (previousMax !== nextMax) buildTrendingDots();
+  updateTrending();
+});
 
 /* ═══════════════════════════
    FETCH GRID CONTENT

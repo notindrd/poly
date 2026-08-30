@@ -54,7 +54,18 @@
     <h2 class="section-title"><i class="ph ph-trend-up"></i> <span id="sectionTitle">Trending Now</span></h2>
     <div class="page-badge">Page <span id="pageNum">1</span></div>
   </div>
-  <div class="trending-row" id="trendingRow"></div>
+  <div class="trending-carousel" id="trendingCarousel">
+    <button class="carousel-btn carousel-prev" id="trendingPrev" aria-label="Previous trending titles">
+      <i class="ph ph-caret-left"></i>
+    </button>
+    <div class="trending-viewport">
+      <div class="trending-row" id="trendingRow"></div>
+    </div>
+    <button class="carousel-btn carousel-next" id="trendingNext" aria-label="Next trending titles">
+      <i class="ph ph-caret-right"></i>
+    </button>
+  </div>
+  <div class="trending-dots" id="trendingDots" aria-label="Trending slides"></div>
 
   <!-- Filter tabs -->
   <div class="filter-wrap">
