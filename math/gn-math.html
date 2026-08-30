@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="https://cdn.jsdelivr.net/gh/freebuisness/freebuisness.github.io@main/">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            event.preventDefault();
+            event.returnValue = '';
+            return 'Are you sure you want to leave?';
+        });
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WX5VS54ZDW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-WX5VS54ZDW');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Drive - Google Drive</title>
+    <meta name="title" content="GN-Math">
+    <meta name="description" content="Play unblocked games like Crazy Cattle 3D and DriveMad on GN-Math.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gn-math.github.io/">
+    <meta property="og:title" content="GN-Math">
+    <meta property="og:description" content="Play unblocked games on GN-Math. Fast, free, no downloads.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://gn-math.github.io/">
+    <meta name="twitter:title" content="GN-Math">
+    <meta name="twitter:description" content="Play unblocked games on GN-Math.">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <style>
+:root {
+  --bg: #000000;
+  --s1: #0c0c0c;
+  --s2: #141414;
+  --s3: #1c1c1c;
+  --s4: #242424;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.13);
+  --border3: rgba(255,255,255,0.25);
+  --w: #ffffff;
+  --w2: rgba(255,255,255,0.65);
+  --w3: rgba(255,255,255,0.30);
+  --w4: rgba(255,255,255,0.08);
+  --glass: rgba(12,12,12,0.75);
+  --accent: #ffffff;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --t: 0.28s;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--w);
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Poly CRT scanline overlay effect */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.25) 3px, rgba(0,0,0,0.25) 4px);
+  pointer-events: none;
+  z-index: 9997;
+}
+
+header {
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid var(--border2);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  flex-shrink: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: center;
+  position: relative;
+}
+
+/* Shimmer line across top header */
+.header-shimmer {
+  position: absolute;
+  bottom: -1px; left: 0;
+  height: 1px; width: 220px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: hShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes hShimmer {
+  0%   { transform: translateX(-100px); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateX(calc(100vw + 100px)); opacity: 0; }
+}
+
+.version-badge-btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  color: var(--w);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-lg);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  user-select: none;
+}
+
+.version-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  color: #10b981;
+  padding: 2px 6px;
+  border-radius: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.search-container {
+  display: flex;
+  flex-grow: 1;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--w3);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+#searchBar {
+  width: 100%;
+  height: 42px;
+  padding: 0 1rem 0 3rem;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  background: rgba(14,14,14,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--w);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  outline: none;
+  transition: all var(--t) var(--ease);
+}
+
+#searchBar::placeholder { color: var(--w3); }
+#searchBar:focus {
+  border-color: var(--border3);
+  background: rgba(22,22,22,0.92);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15), 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.nav-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-btn, .header-icon-btn {
+  height: 42px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border2);
+  background: var(--s1);
+  color: var(--w2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 1.1rem;
+  white-space: nowrap;
+  transition: all 0.25s var(--ease);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.header-icon-btn {
+  padding: 0 0.85rem;
+}
+
+.nav-btn:hover, .header-icon-btn:hover {
+  background: var(--s2);
+  color: var(--w);
+  border-color: var(--border3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.nav-btn svg, .header-icon-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 4rem;
+  width: 100%;
+  flex: 1;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.25rem;
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.9) translateY(16px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.zone-item {
+  position: relative;
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1 / 1;
+  animation: popIn 0.4s var(--ease) backwards;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.zone-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.zone-item:hover {
+  transform: translateY(-6px) scale(1.025);
+  border-color: var(--border3);
+  background: var(--s2);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.85), 0 4px 12px rgba(255,255,255,0.05);
+}
+
+.zone-item:hover::before { opacity: 1; }
+
+.zone-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  background: var(--s3);
+  transition: transform 0.4s var(--ease);
+}
+
+.zone-item:hover img { transform: scale(1.08); }
+
+/* Shimmering bottom sweep line on hover */
+.zone-item::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: scaleX(0);
+  transition: transform 0.3s var(--ease);
+  z-index: 3;
+}
+
+.zone-item:hover::after { transform: scaleX(1); }
+
+.zone-overlay {
+  position: absolute; inset: 0;
+  background: rgba(8,8,8,0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.28s var(--ease);
+  color: var(--w);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  z-index: 2;
+}
+
+.zone-item:hover .zone-overlay { opacity: 1; }
+
+.zone-overlay h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--w);
+  transform: translateY(10px);
+  transition: transform 0.35s var(--ease);
+  line-height: 1.35;
+}
+
+.zone-overlay p {
+  margin: 2px 0;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--w3);
+  letter-spacing: 0.05em;
+  transform: translateY(10px);
+  transition: transform 0.38s var(--ease);
+}
+
+.zone-item:hover .zone-overlay h3,
+.zone-item:hover .zone-overlay p { transform: translateY(0); }
+
+#zoneViewer {
+  position: fixed; inset: 0;
+  background: #000;
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  width: 100vw; height: 100vh;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.viewer-nav {
+  height: 52px;
+  flex-shrink: 0;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
+  z-index: 10000;
+  position: relative;
+  animation: slideDown 0.3s var(--ease) both;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.viewer-nav-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--w2);
+  font-weight: 600;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewer-nav-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.viewer-nav-btn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--w2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.viewer-nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--w);
+  border-color: var(--border3);
+  transform: translateY(-1px);
+}
+
+.viewer-nav-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.viewer-nav-divider {
+  width: 1px; height: 22px;
+  background: var(--border2);
+  margin: 0 2px;
+}
+
+.exit-btn {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  color: #f87171 !important;
+}
+
+.exit-btn:hover {
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  color: #ffffff !important;
+}
+
+#popupOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.popup {
+  background: var(--s1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border2);
+  box-shadow: 0 32px 64px rgba(0,0,0,0.9);
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: popUp 0.35s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.popup-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--s2);
+  flex-shrink: 0;
+}
+
+#popupTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--w);
+}
+
+#popupClose {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--s3);
+  color: var(--w2);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+#popupClose:hover { background: var(--s4); color: var(--w); border-color: var(--border3); }
+
+#popupBody {
+  padding: 1.5rem;
+  overflow-y: auto;
+  color: var(--w2);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+#popupBody b { color: var(--w); font-weight: 600; }
+#popupBody a { color: var(--w2); text-decoration: underline; text-underline-offset: 3px; }
+#popupBody a:hover { color: var(--w); }
+
+.input-field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--w);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-color: var(--border3);
+}
+
+.settings-button, .modal-btn {
+  width: 100%;
+  height: 42px;
+  padding: 0 1.2rem;
+  background: var(--w);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-button {
+  background: transparent;
+  color: var(--w2);
+  border: 1px solid var(--border2);
+}
+
+.settings-button:hover {
+  border-color: var(--border3);
+  color: var(--w);
+  background: var(--s2);
+  transform: translateY(-1px);
+}
+
+.modal-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.settings-btn-group { display: flex; flex-direction: column; gap: 10px; padding: 0.25rem 0; }
+
+@media (max-width: 768px) {
+  header { padding: 0; }
+  .header-content { padding: 0.75rem 1rem; }
+  main { padding: 1rem 1rem 3rem; }
+  #container { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.85rem; }
+  .version-badge-btn { font-size: 16px; padding: 0.4rem 0.65rem; }
+  .viewer-nav-label { display: none; }
+}
+    </style>
+</head>
+<body>
+
+<header>
+  <div class="header-shimmer"></div>
+  <div class="header-content">
+    <div class="version-badge-btn" title="GN-Math Poly Edition">
+      GN-MATH <span class="version-tag">POLY</span>
+    </div>
+    
+    <div class="search-container">
+      <div class="search-wrapper">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()" autocomplete="off">
+      </div>
+      
+      <div class="nav-actions">
+        <button onclick="showTabCloakModal()" class="nav-btn" title="Tab Cloak">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Tab Cloak
+        </button>
+        <button onclick="showSettings()" class="header-icon-btn" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="container">Loading zones...</div>
+</main>
+
+<div id="zoneViewer">
+  <span id="zoneId" style="display:none;"></span>
+  <div class="viewer-nav">
+    <span class="viewer-nav-label" id="viewerTitle">GAME LAUNCHER</span>
+    <button class="viewer-nav-btn" onclick="showZoneInfo()" title="Info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      Info
+    </button>
+    <div class="viewer-nav-divider"></div>
+    <button class="viewer-nav-btn" onclick="downloadZone()" title="Download">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download
+    </button>
+    <div class="viewer-nav-divider"></div>
+    <button class="viewer-nav-btn" onclick="reloadZone()" title="Reload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Reload
+    </button>
+    <div class="viewer-nav-divider"></div>
+    <button class="viewer-nav-btn exit-btn" onclick="closeZone()" title="Exit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Exit
+    </button>
+  </div>
+  <iframe id="zoneFrame" style="width:100%;height:100%;border:none;flex:1;" allowfullscreen="true"></iframe>
+</div>
+
+<div id="popupOverlay">
+  <div class="popup">
+    <div class="popup-header">
+      <h3 id="popupTitle">Settings</h3>
+      <button id="popupClose" onclick="closePopup()">✕</button>
+    </div>
+    <div id="popupBody"></div>
+  </div>
+</div>
+
+<input type="file" id="importData" style="display:none;" onchange="loadData(event)">
+
+<script>
+function enforceGoogleDriveDisguise() {
+    if (window.customCloaked) return; // Allow user cloak settings to override default drive disguise if set
+    if (document.title !== "My Drive - Google Drive") document.title = "My Drive - Google Drive";
+    const icons = document.querySelectorAll("link[rel*='icon']");
+    icons.forEach(icon => {
+        if (icon.href !== "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png")
+            icon.href = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
+    });
+}
+enforceGoogleDriveDisguise();
+setInterval(enforceGoogleDriveDisguise, 1000);
+
+const container  = document.getElementById('container');
+const zoneViewer = document.getElementById('zoneViewer');
+let   zoneFrame  = document.getElementById('zoneFrame');
+const searchBar  = document.getElementById('searchBar');
+const viewerTitle = document.getElementById('viewerTitle');
+
+const zonesurls = [
+    "https://cdn.jsdelivr.net/gh/freebuisness/assets@main/zones.json",
+    "https://cdn.jsdelivr.net/gh/freebuisness/assets@latest/zones.json",
+    "https://cdn.jsdelivr.net/gh/freebuisness/assets@master/zones.json",
+    "https://cdn.jsdelivr.net/gh/freebuisness/assets/zones.json"
+];
+let zonesURL  = zonesurls[Math.floor(Math.random() * zonesurls.length)];
+const coverURL = "https://cdn.jsdelivr.net/gh/freebuisness/covers@main";
+const htmlURL  = "https://cdn.jsdelivr.net/gh/freebuisness/html@main";
+let zones = [];
+let popularityData = {};
+
+async function listZones() {
+    try {
+        let sha;
+        try {
+            const shaRes = await fetch("https://api.github.com/repos/freebuisness/assets/commits?t=" + Date.now());
+            if (shaRes && shaRes.status === 200) {
+                const shaJson = await shaRes.json();
+                sha = shaJson[0]['sha'];
+                if (sha) zonesURL = `https://cdn.jsdelivr.net/gh/freebuisness/assets@${sha}/zones.json`;
+            }
+        } catch(e) {
+            try {
+                const r2 = await fetch("https://raw.githubusercontent.com/freebuisness/xml/refs/heads/main/sha.txt?t=" + Date.now());
+                if (r2 && r2.status === 200) {
+                    sha = (await r2.text()).trim();
+                    if (sha) zonesURL = `https://cdn.jsdelivr.net/gh/freebuisness/assets@${sha}/zones.json`;
+                }
+            } catch(e2) {}
+        }
+        const response = await fetch(zonesURL + "?t=" + Date.now());
+        const json = await response.json();
+        zones = json;
+        await Promise.all([fetchPopularity("year"), fetchPopularity("month"), fetchPopularity("week"), fetchPopularity("day")]);
+        sortZones();
+        try {
+            const search = new URLSearchParams(window.location.search);
+            const id = search.get('id');
+            const embed = window.location.hash.includes("embed");
+            if (id) {
+                const zone = zones.find(z => z.id + '' === id + '');
+                if (zone) {
+                    if (embed) {
+                        if (zone.url.startsWith("http")) { window.open(zone.url, "_blank"); }
+                        else {
+                            const url = zone.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+                            fetch(url + "?t=" + Date.now()).then(r => r.text()).then(html => {
+                                document.documentElement.innerHTML = html;
+                                document.documentElement.querySelectorAll('script').forEach(old => {
+                                    const s = document.createElement('script');
+                                    if (old.src) s.src = old.src; else s.textContent = old.textContent;
+                                    document.body.appendChild(s);
+                                });
+                            });
+                        }
+                    } else { openZone(zone); }
+                }
+            }
+        } catch(e) {}
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = `<p style="color:var(--w3);font-size:13px;letter-spacing:0.06em;grid-column:1/-1;text-align:center;padding:4rem 0;">Error loading zones: ${error}</p>`;
+    }
+}
+
+async function fetchPopularity(duration) {
+    try {
+        if (!popularityData[duration]) popularityData[duration] = {};
+        const res = await fetch("https://data.jsdelivr.com/v1/stats/packages/gh/freebuisness/html@main/files?period=" + duration);
+        const data = await res.json();
+        data.forEach(file => {
+            const m = file.name.match(/\/(\d+)\.html$/);
+            if (m) popularityData[duration][parseInt(m[1])] = file.hits?.total ?? 0;
+        });
+    } catch(e) {
+        if (!popularityData[duration]) popularityData[duration] = {};
+        popularityData[duration][0] = 0;
+    }
+}
+
+function sortZones() {
+    zones.sort((a, b) => a.id - b.id);
+    zones.sort((a, b) => (a.id === -1 ? -1 : b.id === -1 ? 1 : 0));
+    displayZones(zones);
+}
+
+function displayZones(zonesToDisplay) {
+    container.innerHTML = "";
+    zonesToDisplay.forEach((file, index) => {
+        const item = document.createElement("div");
+        item.className = "zone-item";
+        item.style.animationDelay = `${(index % 30) * 0.03}s`;
+        item.onclick = () => openZone(file);
+
+        const img = document.createElement("img");
+        img.dataset.src = file.cover.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        img.alt = file.name;
+        img.loading = "lazy";
+        img.className = "lazy-zone-img";
+        item.appendChild(img);
+
+        const overlay = document.createElement("div");
+        overlay.className = "zone-overlay";
+
+        const title = document.createElement("h3");
+        title.textContent = file.name;
+        overlay.appendChild(title);
+
+        if (file.author) {
+            const author = document.createElement("p");
+            author.textContent = "by " + file.author;
+            overlay.appendChild(author);
+        }
+        if (file.special && file.special.length > 0) {
+            const tags = document.createElement("p");
+            tags.textContent = Array.isArray(file.special) ? file.special.join(" · ") : file.special;
+            overlay.appendChild(tags);
+        }
+        item.appendChild(overlay);
+        container.appendChild(item);
+    });
+
+    if (zonesToDisplay.length === 0) {
+        container.innerHTML = `<p style="color:var(--w3);font-size:13px;letter-spacing:0.06em;grid-column:1/-1;text-align:center;padding:4rem 0;">No zones found.</p>`;
+    }
+
+    const lazyImages = document.querySelectorAll('img.lazy-zone-img');
+    const imgObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove("lazy-zone-img");
+                obs.unobserve(img);
+            }
+        });
+    }, { rootMargin: "100px", threshold: 0.1 });
+    lazyImages.forEach(img => imgObserver.observe(img));
+}
+
+function filterZones() {
+    const q = searchBar.value.toLowerCase();
+    displayZones(zones.filter(z => z.name.toLowerCase().includes(q)));
+}
+
+function openZone(file) {
+    if (file.url.startsWith("http")) {
+        window.open(file.url, "_blank");
+    } else {
+        const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        fetch(url + "?t=" + Date.now()).then(r => r.text()).then(html => {
+            if (zoneFrame.contentDocument === null) {
+                zoneFrame = document.createElement("iframe");
+                zoneFrame.id = "zoneFrame";
+                zoneFrame.style.cssText = "width:100%;height:100%;border:none;flex:1;";
+                zoneViewer.appendChild(zoneFrame);
+            }
+            zoneFrame.contentDocument.open();
+            zoneFrame.contentDocument.write(html);
+            zoneFrame.contentDocument.close();
+            document.getElementById('zoneId').textContent = file.id;
+            viewerTitle.textContent = file.name ? file.name.toUpperCase() : "GAME VIEWER";
+            zoneViewer.style.display = "flex";
+            zoneViewer.hidden = false;
+            try {
+                const u = new URL(window.location);
+                u.searchParams.set('id', file.id);
+                history.pushState(null, '', u.toString());
+            } catch(e) {}
+        }).catch(err => alert("Failed to load zone: " + err));
+    }
+}
+
+function reloadZone() {
+    const id = document.getElementById('zoneId').textContent;
+    const zone = zones.find(z => z.id + '' === id);
+    if (zone) openZone(zone);
+}
+
+function closeZone() {
+    zoneViewer.hidden = true;
+    zoneViewer.style.display = "none";
+    if (zoneViewer.contains(zoneFrame)) zoneViewer.removeChild(zoneFrame);
+    try {
+        const u = new URL(window.location);
+        u.searchParams.delete('id');
+        history.pushState(null, '', u.toString());
+    } catch(e) {}
+}
+
+function downloadZone() {
+    const zone = zones.find(z => z.id + '' === document.getElementById('zoneId').textContent);
+    if (!zone) return;
+    fetch(zone.url.replace("{HTML_URL}", htmlURL) + "?t=" + Date.now())
+        .then(r => r.text()).then(text => {
+            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href = url; a.download = zone.name + ".html";
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a); URL.revokeObjectURL(url);
+        });
+}
+
+function sanitizeData(obj, maxStr = 1000, maxArr = 10000) {
+    if (typeof obj === 'string') return obj.length > maxStr ? obj.slice(0, maxStr) + '…' : obj;
+    if (obj instanceof Uint8Array) return obj.length > maxArr ? `[Uint8Array too large (${obj.length} bytes)]` : obj;
+    if (Array.isArray(obj)) return obj.map(i => sanitizeData(i, maxStr, maxArr));
+    if (obj && typeof obj === 'object') { const n = {}; for (const k in obj) if (obj.hasOwnProperty(k)) n[k] = sanitizeData(obj[k], maxStr, maxArr); return n; }
+    return obj;
+}
+
+async function saveData() {
+    alert("This might take a while, don't touch anything other than this OK button");
+    const result = { cookies: document.cookie, localStorage: {...localStorage}, sessionStorage: {...sessionStorage}, indexedDB: {}, caches: {} };
+    const dbs = await indexedDB.databases();
+    for (const dbInfo of dbs) {
+        if (!dbInfo.name) continue;
+        result.indexedDB[dbInfo.name] = {};
+        await new Promise((resolve, reject) => {
+            const req = indexedDB.open(dbInfo.name, dbInfo.version);
+            req.onerror = () => reject(req.error);
+            req.onsuccess = () => {
+                const db = req.result;
+                const storeNames = Array.from(db.objectStoreNames);
+                if (!storeNames.length) { resolve(); return; }
+                const tx = db.transaction(storeNames, "readonly");
+                Promise.all(storeNames.map(sn => {
+                    result.indexedDB[dbInfo.name][sn] = [];
+                    return new Promise((res, rej) => {
+                        const r = tx.objectStore(sn).getAll();
+                        r.onsuccess = () => { result.indexedDB[dbInfo.name][sn] = sanitizeData(r.result, 1000, 100); res(); };
+                        r.onerror = () => rej(r.error);
+                    });
+                })).then(resolve);
+            };
+        });
+    }
+    const cacheNames = await caches.keys();
+    for (const cn of cacheNames) {
+        const cache = await caches.open(cn);
+        result.caches[cn] = [];
+        for (const req of await cache.keys()) {
+            const res = await cache.match(req);
+            if (!res) continue;
+            const ct = res.clone().headers.get('content-type') || '';
+            let body;
+            try {
+                if (ct.includes('json')) body = await res.clone().json();
+                else if (ct.includes('text') || ct.includes('javascript')) body = await res.clone().text();
+                else { const buf = await res.clone().arrayBuffer(); body = btoa(String.fromCharCode(...new Uint8Array(buf))); }
+            } catch(e) { body = '[Unable to read]'; }
+            result.caches[cn].push({ url: req.url, body, contentType: ct });
+        }
+    }
+    alert("Done, wait for the download");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([JSON.stringify(result)], { type: "application/octet-stream" }));
+    link.download = `${Date.now()}.data`;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+async function loadData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    alert("This might take a while, don't touch anything other than this OK button");
+    const reader = new FileReader();
+    reader.onload = async e => {
+        const data = JSON.parse(e.target.result);
+        if (data.cookies) data.cookies.split(';').forEach(c => document.cookie = c.trim());
+        if (data.localStorage) for (const k in data.localStorage) localStorage.setItem(k, data.localStorage[k]);
+        if (data.sessionStorage) for (const k in data.sessionStorage) sessionStorage.setItem(k, data.sessionStorage[k]);
+        if (data.indexedDB) {
+            for (const dbName in data.indexedDB) {
+                const stores = data.indexedDB[dbName];
+                await new Promise((resolve, reject) => {
+                    const req = indexedDB.open(dbName, 1);
+                    req.onupgradeneeded = e => { const db = e.target.result; for (const sn in stores) if (!db.objectStoreNames.contains(sn)) db.createObjectStore(sn, { keyPath: 'id', autoIncrement: true }); };
+                    req.onsuccess = e => {
+                        const db = e.target.result;
+                        const tx = db.transaction(Object.keys(stores), 'readwrite');
+                        tx.onerror = () => reject(tx.error);
+                        let pending = Object.keys(stores).length;
+                        for (const sn in stores) {
+                            const os = tx.objectStore(sn);
+                            os.clear().onsuccess = () => { for (const item of stores[sn]) os.put(item); if (--pending === 0) resolve(); };
+                        }
+                    };
+                    req.onerror = () => reject(req.error);
+                });
+            }
+        }
+        if (data.caches) {
+            for (const cn in data.caches) {
+                const cache = await caches.open(cn);
+                await cache.keys().then(keys => Promise.all(keys.map(k => cache.delete(k))));
+                for (const entry of data.caches[cn]) {
+                    let body;
+                    if (entry.contentType.includes('json')) body = JSON.stringify(entry.body);
+                    else if (entry.contentType.includes('text') || entry.contentType.includes('javascript')) body = entry.body;
+                    else { const bs = atob(entry.body); const bytes = new Uint8Array(bs.length); for (let i = 0; i < bs.length; i++) bytes[i] = bs.charCodeAt(i); body = bytes.buffer; }
+                    await cache.put(entry.url, new Response(body, { headers: new Headers({ 'content-type': entry.contentType }) }));
+                }
+            }
+        }
+        alert("Data loaded");
+    };
+    reader.readAsText(file);
+}
+
+function showSettings() {
+    document.getElementById('popupTitle').textContent = "Settings";
+    document.getElementById('popupBody').innerHTML = `
+      <div class="settings-btn-group">
+        <button class="settings-button" onclick="saveData()">Export Save Data</button>
+        <button class="settings-button" onclick="document.getElementById('importData').click()">Import Save Data</button>
+      </div>`;
+    document.getElementById('popupOverlay').style.display = "flex";
+}
+
+function showTabCloakModal() {
+    document.getElementById('popupTitle').textContent = "Tab Cloaking";
+    document.getElementById('popupBody').innerHTML = `
+      <label style="display:block; font-size:12px; color:var(--w2); margin-bottom:6px;">Custom Tab Title</label>
+      <input type="text" class="input-field" id="cloakTitleInput" placeholder="Google Docs, Canvas, Drive...">
+      
+      <label style="display:block; font-size:12px; color:var(--w2); margin-bottom:6px;">Custom Favicon URL</label>
+      <input type="text" class="input-field" id="cloakIconInput" placeholder="https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico">
+      
+      <button class="modal-btn" onclick="applyTabCloak()">Apply Cloak</button>
+    `;
+    document.getElementById('popupOverlay').style.display = "flex";
+}
+
+function applyTabCloak() {
+    const title = document.getElementById('cloakTitleInput').value.trim();
+    const icon  = document.getElementById('cloakIconInput').value.trim();
+
+    if (title) {
+        document.title = title;
+        window.customCloaked = true;
+    }
+    
+    if (icon) {
+        let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href = icon;
+        document.getElementsByTagName('head')[0].appendChild(link);
+        window.customCloaked = true;
+    }
+
+    closePopup();
+}
+
+let _allStatsCache = null;
+async function getAllStats() {
+    if (_allStatsCache) return _allStatsCache;
+    const BASE = "https://data.jsdelivr.com/v1/stats/packages/gh/freebuisness/html@main/files";
+    let page = 1, done = false;
+    const map = Object.create(null);
+    while (!done) {
+        const pages = Array.from({ length: 5 }, (_, i) => page + i);
+        const responses = await Promise.all(pages.map(p => fetch(`${BASE}?period=year&page=${p}&limit=100`).then(r => r.ok ? r.json() : [])));
+        for (const data of responses) {
+            if (!Array.isArray(data) || !data.length) { done = true; break; }
+            for (const item of data) {
+                const m = item.name?.match(/^\/(\d+)[.-]/);
+                if (!m) continue;
+                const id = m[1];
+                if (!map[id]) map[id] = { hits: 0, bandwidth: 0 };
+                map[id].hits += item.hits?.total ?? 0;
+                map[id].bandwidth += item.bandwidth?.total ?? 0;
+            }
+        }
+        page += 5;
+    }
+    _allStatsCache = map;
+    return map;
+}
+
+async function showZoneInfo() {
+    const id = Number(document.getElementById('zoneId').textContent);
+    document.getElementById('popupTitle').textContent = "Info";
+    document.getElementById('popupBody').innerHTML = `<p style="color:var(--w3);">Loading...</p>`;
+    document.getElementById('popupOverlay').style.display = "flex";
+    const [commits, allStats] = await Promise.all([
+        fetch(`https://api.github.com/repos/freebuisness/html/commits?path=${id}.html`).then(r => r.json()),
+        getAllStats()
+    ]);
+    const stats = allStats[String(id)]?.hits ?? 0;
+    const zone  = zones.find(z => z.id === id);
+    document.getElementById('popupTitle').textContent = zone?.name ? zone.name + " — Info" : "Info";
+    
+    let fmt = 'Unknown';
+    if (commits && Array.isArray(commits) && commits.length > 0) {
+        const date = new Date(commits.at(-1).commit.author.date);
+        fmt = new Intl.DateTimeFormat("en-US", { month:"long", day:"numeric", year:"numeric", hour:"numeric", minute:"2-digit", hour12:true }).format(date);
+    }
+    
+    document.getElementById('popupBody').innerHTML = `
+        <p>
+        <b>ID</b>: ${id}<br>
+        <b>Name</b>: ${zone?.name ?? '—'}<br>
+        ${zone?.author ? `<b>Author</b>: ${zone.author}<br>` : ''}
+        ${zone?.authorLink ? `<b>Author Link</b>: <a href="${zone.authorLink}" target="_blank">${zone.authorLink}</a><br>` : ''}
+        ${zone?.special ? `<b>Tags</b>: ${zone.special}<br>` : ''}
+        ${commits && Array.isArray(commits) && commits.length > 0 ? `<b>Added by</b>: ${commits.at(-1).commit.author.name}<br><b>Date Added</b>: ${fmt}<br>` : ''}
+        <b>Times Played</b>: ${Number(stats).toLocaleString("en-US")}
+        </p>`;
+}
+
+function closePopup() { document.getElementById('popupOverlay').style.display = "none"; }
+HTMLCanvasElement.prototype.toDataURL = function() { return ""; };
+
+// Start zone loading
+listZones();
+</script>
+<script>
+try {
+    const search = new URLSearchParams(window.location.search);
+    if (search.get('privacy')) loadPrivacy();
+} catch(e) {}
+</script>
+<script>
+try { navigator.serviceWorker.register(location.protocol + '//' + location.hostname + '/sw.js'); } catch(e) {}
+</script>
+</body>
+</html>
