@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Grid</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+:root {
+  --bg: #000;
+  --s1: #0c0c0c;
+  --s2: #141414;
+  --s3: #1c1c1c;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.13);
+  --border3: rgba(255,255,255,0.22);
+  --w: #fff;
+  --w2: rgba(255,255,255,0.55);
+  --w3: rgba(255,255,255,0.22);
+  --glass: rgba(8,8,8,0.6);
+  --radius: 12px;
+  --radius-lg: 4px;
+  --ease: cubic-bezier(0.4,0,0.2,1);
+  --net-good: #22c55e;
+  --net-warn: #f59e0b;
+  --net-bad: #ef4444;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--w); }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.018) 3px, rgba(0,0,0,0.018) 4px);
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* ── OFFLINE BANNER ── */
+#net-banner {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  background: rgba(239,68,68,0.1);
+  border-bottom: 1px solid rgba(239,68,68,0.28);
+  font-size: 12px;
+  font-weight: 500;
+  color: #fca5a5;
+  z-index: 190;
+  flex-shrink: 0;
+}
+#net-banner.visible { display: flex; }
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0;
+  z-index: 200;
+  height: 54px;
+  padding: 0 20px;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.search-wrap {
+  flex: 1;
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--w3);
+  width: 16px; height: 16px;
+  pointer-events: none; z-index: 2;
+}
+
+#search {
+  width: 100%;
+  padding: 0.72rem 1rem 0.72rem 2.75rem;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--w);
+  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  outline: none;
+  transition: all 0.25s var(--ease);
+}
+#search::placeholder { color: var(--w3); }
+#search:focus {
+  border-color: rgba(255,255,255,0.32);
+  background: rgba(14,14,14,0.85);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.result-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--w3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── NETWORK PILL ── */
+.net-pill-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+#net-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: var(--glass);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--w2);
+  white-space: nowrap;
+  cursor: default;
+  transition: border-color 0.3s;
+  user-select: none;
+}
+#net-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--w3);
+  flex-shrink: 0;
+  transition: background 0.35s, box-shadow 0.35s;
+}
+#net-dot.good { background: var(--net-good); box-shadow: 0 0 7px var(--net-good); }
+#net-dot.warn { background: var(--net-warn); box-shadow: 0 0 7px var(--net-warn); }
+#net-dot.bad  { background: var(--net-bad);  box-shadow: 0 0 7px var(--net-bad);  }
+#net-dot.checking { animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* Tooltip on hover */
+.net-pill-wrap:hover #net-tooltip { opacity: 1; pointer-events: auto; }
+#net-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--w2);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+  z-index: 300;
+  min-width: 190px;
+}
+#net-tooltip .tt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+}
+.tt-label { color: var(--w3); }
+.tt-val   { color: var(--w); }
+
+/* ── MAIN ── */
+.main-content {
+  flex: 1;
+  padding: 1.5rem 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ── TYPE TOGGLE ── */
+.type-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-wrap: wrap;
+}
+.type-toggle::-webkit-scrollbar { display: none; }
+
+.type-btn {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--w2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s var(--ease);
+}
+.type-btn:hover { border-color: var(--border3); color: var(--w); }
+.type-btn.active { background: var(--w); border-color: var(--w); color: #000; }
+
+/* ── GRID ── */
+#grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.94) translateY(12px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── CARD — square + boxy ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  aspect-ratio: 1 / 1; 
+  transition: transform 0.28s var(--ease), border-color 0.28s var(--ease), box-shadow 0.28s var(--ease);
+  animation: popIn 0.4s var(--ease) both;
+}
+
+.card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: scaleX(0);
+  transition: transform 0.28s var(--ease);
+  z-index: 4;
+}
+.card:hover {
+  transform: translateY(-5px) scale(1.025);
+  border-color: var(--border3);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.75), 0 3px 6px rgba(0,0,0,0.5);
+}
+.card:hover::after { transform: scaleX(1); }
+.card:active { transform: translateY(-2px) scale(1); box-shadow: none; }
+
+.card-thumb {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  background: var(--s2);
+  transition: filter 0.28s var(--ease);
+}
+.card:hover .card-thumb { filter: brightness(0.28) blur(0.5px); }
+
+/* ── HOVER OVERLAY ── */
+.card-overlay {
+  position: absolute; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  transition: opacity 0.22s var(--ease);
+  z-index: 3;
+  text-align: center;
+}
+.card:hover .card-overlay { opacity: 1; }
+
+.overlay-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.35;
+  color: var(--w);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+}
+
+/* ── EMPTY / ERROR ── */
+.empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--w3);
+}
+.empty-icon { font-size: 44px; margin-bottom: 14px; }
+.empty-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+}
+
+/* ── LOADING / SENTINEL ── */
+.loading-cell {
+  grid-column: 1/-1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 20px;
+}
+#load-more-sentinel {
+  grid-column: 1/-1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 20px;
+}
+#load-more-btn {
+  height: 34px;
+  padding: 0 22px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--w2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+#load-more-btn:hover { border-color: var(--border3); color: var(--w); }
+
+.page-info {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--w3);
+}
+.spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border2);
+  border-top-color: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.loading-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--w3);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+@media (max-width: 600px) {
+  .main-content { padding: 1rem; }
+  #grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; }
+  #net-label { display: none; }
+}
+  </style>
+</head>
+<body>
+
+  <!-- Offline banner sits above sticky header -->
+  <div id="net-banner">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+      <line x1="1" y1="1" x2="23" y2="23"/>
+      <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+      <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+      <path d="M10.71 5.05A16 16 0 0 1 22.56 9"/>
+      <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+      <line x1="12" y1="20" x2="12.01" y2="20"/>
+    </svg>
+    <span id="net-banner-msg">No connection — games may not load</span>
+  </div>
+
+  <header>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="search" type="text" placeholder="Search games…" autocomplete="off">
+    </div>
+    <span class="result-count" id="result-count"></span>
+
+    <div class="net-pill-wrap">
+      <div id="net-pill">
+        <span id="net-dot" class="checking"></span>
+        <span id="net-label">Checking…</span>
+      </div>
+      <div id="net-tooltip">
+        <div class="tt-row"><span class="tt-label">Status</span><span class="tt-val" id="tt-status">—</span></div>
+        <div class="tt-row"><span class="tt-label">Latency</span><span class="tt-val" id="tt-latency">—</span></div>
+        <div class="tt-row"><span class="tt-label">Checked</span><span class="tt-val" id="tt-time">—</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="type-toggle" id="categories"></div>
+    <div id="grid"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+  <script>
+  /* ══════════════════════════════════════
+     NETWORK CHECKER
+  ══════════════════════════════════════ */
+  const netDot      = document.getElementById('net-dot');
+  const netLabel    = document.getElementById('net-label');
+  const netBanner   = document.getElementById('net-banner');
+  const ttStatus    = document.getElementById('tt-status');
+  const ttLatency   = document.getElementById('tt-latency');
+  const ttTime      = document.getElementById('tt-time');
+
+  async function checkNetwork() {
+    netDot.className = 'checking';
+    const t0 = performance.now();
+    try {
+      await fetch('https://www.gstatic.com/generate_204', {
+        method: 'HEAD', cache: 'no-store', mode: 'no-cors',
+        signal: AbortSignal.timeout(4000),
+      });
+      const ms = Math.round(performance.now() - t0);
+      applyStatus(ms);
+    } catch {
+      applyStatus(null);
+    }
+  }
+
+  function applyStatus(ms) {
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    ttTime.textContent = now;
+
+    if (ms === null) {
+      netDot.className = 'bad';
+      netLabel.textContent  = 'Offline';
+      ttStatus.textContent  = 'Offline';
+      ttLatency.textContent = '—';
+      netBanner.classList.add('visible');
+    } else {
+      netBanner.classList.remove('visible');
+      ttLatency.textContent = `${ms} ms`;
+
+      if (ms < 150) {
+        netDot.className = 'good';
+        netLabel.textContent = 'Online';
+        ttStatus.textContent = 'Good';
+      } else if (ms < 500) {
+        netDot.className = 'warn';
+        netLabel.textContent = 'Slow';
+        ttStatus.textContent = 'Degraded';
+      } else {
+        netDot.className = 'bad';
+        netLabel.textContent = 'Poor';
+        ttStatus.textContent = 'Poor';
+      }
+    }
+  }
+
+  checkNetwork();
+  setInterval(checkNetwork, 15000);
+  window.addEventListener('offline', () => applyStatus(null));
+  window.addEventListener('online',  checkNetwork);
+
+
+  /* ══════════════════════════════════════
+     GAME GRID
+  ══════════════════════════════════════ */
+  const gridEl      = document.getElementById('grid');
+  const catBar      = document.getElementById('categories');
+  const searchInput = document.getElementById('search');
+  const resultCount = document.getElementById('result-count');
+
+  const PAGE_SIZE   = 48;
+  let currentQuery    = '';
+  let currentCategory = '';
+  let currentPage     = 1;
+  let totalGames      = 0;
+  let isLoading       = false;
+  let hasMore         = true;
+  let observer        = null;
+
+  (async () => {
+    try {
+        await Lumin.init({
+        headless: true,
+        onReady: () => console.log('Lumin connected'),
+        onError: (err) => console.error('Lumin error:', err),
+        });
+        const { categories } = await Lumin.getCategories();
+        renderCategories(['All', ...categories]);
+        await resetAndLoad();
+    } catch (e) {
+        console.error("Failed to initialize SDK", e);
+    }
+  })();
+
+  let debounce;
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => { currentQuery = e.target.value.trim(); resetAndLoad(); }, 300);
+  });
+
+  function renderCategories(cats) {
+    catBar.innerHTML = '';
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'type-btn' + (cat === 'All' && !currentCategory ? ' active' : '');
+      btn.textContent = cat;
+      btn.onclick = () => {
+        currentCategory = cat === 'All' ? '' : cat;
+        catBar.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        resetAndLoad();
+      };
+      catBar.appendChild(btn);
+    });
+  }
+
+  async function resetAndLoad() {
+    currentPage = 1; hasMore = true; totalGames = 0;
+    gridEl.innerHTML = `<div class="loading-cell"><div class="spinner"></div><span class="loading-label">Loading</span></div>`;
+    resultCount.textContent = '';
+    await fetchPage(true);
+  }
+
+  async function fetchPage(isFirst = false) {
+    if (isLoading || !hasMore) return;
+    isLoading = true;
+    const old = document.getElementById('load-more-sentinel');
+    if (old) old.remove();
+
+    try {
+      const result = await Lumin.getGames({
+        page: currentPage, limit: PAGE_SIZE, q: currentQuery,
+        ...(currentCategory ? { category: currentCategory } : {}),
+      });
+
+      if (isFirst) gridEl.innerHTML = '';
+      const games = result.games || [];
+      
+      // Fix 1: Only stop pagination if we receive NO games. 
+      // The old logic `games.length < PAGE_SIZE` prematurely stopped the load 
+      // if the API capped its output to a lower number than the PAGE_SIZE request.
+      if (games.length === 0) {
+          hasMore = false;
+      }
+      totalGames += games.length;
+
+      // Fix 2: If the API sends the exact total count, use it to stop pagination accurately
+      const exactTotal = result.total ?? result.count ?? result.totalGames;
+      if (exactTotal !== undefined && totalGames >= exactTotal) {
+          hasMore = false;
+      }
+
+      if (isFirst && totalGames === 0) {
+        gridEl.innerHTML = `<div class="empty"><div class="empty-icon">⌀</div><div class="empty-text">No games found</div></div>`;
+        resultCount.textContent = '0 results';
+        return;
+      }
+
+      // Fix 3: Safely fetch image URLs so one broken token doesn't crash the entire page
+      const imgUrls = await Promise.all(
+        games.map(g => 
+          Promise.resolve(Lumin.getImageUrl(g.image_token))
+            .catch(() => '') // Fallback for broken images
+        )
+      );
+
+      games.forEach((game, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.animationDelay = `${Math.min(i * 0.025, 0.6)}s`;
+        
+        // Use a generic placeholder if the image fails to load
+        const thumbUrl = imgUrls[i] || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; 
+        
+        card.innerHTML = `
+          <img class="card-thumb" src="${thumbUrl}" alt="${game.name}" loading="lazy">
+          <div class="card-overlay"><div class="overlay-title">${game.name}</div></div>
+        `;
+        card.onclick = () => Lumin.loadGame(game.id);
+        gridEl.appendChild(card);
+      });
+
+      // Update Header Display - Use Exact total if provided, otherwise estimate
+      if (exactTotal !== undefined) {
+        resultCount.textContent = `${exactTotal} game${exactTotal !== 1 ? 's' : ''}`;
+      } else {
+        resultCount.textContent = hasMore ? `${totalGames}+ games` : `${totalGames} game${totalGames !== 1 ? 's' : ''}`;
+      }
+      
+      currentPage++;
+
+      // Re-attach sentinel if there are more pages
+      const sentinel = document.createElement('div');
+      sentinel.id = 'load-more-sentinel';
+      if (hasMore) {
+        sentinel.innerHTML = `<button id="load-more-btn" onclick="fetchPage()">Load more</button><span class="page-info">Page ${currentPage - 1} · ${totalGames} loaded</span>`;
+        gridEl.appendChild(sentinel);
+        setupObserver(sentinel.querySelector('#load-more-btn'));
+      } else {
+        sentinel.innerHTML = `<span class="page-info">All ${totalGames} games loaded</span>`;
+        gridEl.appendChild(sentinel);
+      }
+
+    } catch (err) {
+      console.error(err);
+      if (isFirst) gridEl.innerHTML = `<div class="empty"><div class="empty-icon">⚠</div><div class="empty-text">Failed to load</div></div>`;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  function setupObserver(btn) {
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !isLoading && hasMore) fetchPage();
+    }, { rootMargin: '200px' });
+    if (btn) observer.observe(btn);
+  }
+  </script>
+</body>
+</html>
+
