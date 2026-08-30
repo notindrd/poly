@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UGS Files — Poly</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000000;
+  --s1: #0c0c0c;
+  --s2: #141414;
+  --s3: #1c1c1c;
+  --s4: #242424;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.13);
+  --border3: rgba(255,255,255,0.25);
+  --w: #ffffff;
+  --w2: rgba(255,255,255,0.65);
+  --w3: rgba(255,255,255,0.30);
+  --w4: rgba(255,255,255,0.08);
+  --glass: rgba(12,12,12,0.75);
+  --accent: #ffffff;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--w);
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Scanlines overlay effect */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.25) 3px, rgba(0,0,0,0.25) 4px);
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* Hidden sidebar stub required by external scripts */
+#sidebar { display: none !important; }
+
+/* Main content wrapper */
+.main-content {
+  flex: 1;
+  padding: 1.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Consolidated Top Bar with Search & Inline Version Badge */
+.top-bar {
+  width: 100%;
+  margin-bottom: 2rem;
+  position: sticky;
+  top: 15px;
+  z-index: 100;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.version-badge-btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  color: var(--w);
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-lg);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  user-select: none;
+}
+
+.version-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  color: #10b981;
+  padding: 2px 6px;
+  border-radius: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: 2px;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-btn {
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  color: var(--w2);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-lg);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.2s var(--ease);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.nav-btn:hover {
+  background: var(--s2);
+  color: var(--w);
+  border-color: var(--border3);
+  transform: translateY(-1px);
+}
+
+.nav-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--w3);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 0.9rem 1rem 0.9rem 3.2rem;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  color: var(--w);
+  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  outline: none;
+  transition: all 0.25s var(--ease);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+#searchInput::placeholder { color: var(--w3); }
+#searchInput:focus {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(18,18,18,0.92);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.2), 0 12px 40px rgba(0,0,0,0.6);
+}
+
+/* Hide injected cloak buttons from external scripts */
+#cloak, .cloak, .cloak-btn,
+[id*="cloak"], [class*="cloak"],
+.top-bar button:not(.nav-btn) { display: none !important; }
+
+#sections-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  align-items: stretch;
+}
+
+.letter-section, .buttons-container { display: contents; }
+.letter-header, .empty-message { display: none !important; }
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.9) translateY(14px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Universal Button Styling for Local & Injected Game Buttons */
+input[type="button"], .game-card {
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1rem;
+
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.35;
+
+  color: var(--w2);
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* Shimmer overlay */
+input[type="button"]::before, .game-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bottom light line */
+input[type="button"]::after, .game-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: scaleX(0);
+  transition: transform 0.3s var(--ease);
+}
+
+input[type="button"]:not(.hidden-btn) {
+  animation: popIn 0.35s var(--ease) backwards;
+}
+
+input[type="button"]:hover, .game-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(255,255,255,0.35);
+  color: var(--w);
+  background: var(--s2);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 4px 12px rgba(255,255,255,0.05);
+}
+
+input[type="button"]:hover::before, .game-card:hover::before { opacity: 1; }
+input[type="button"]:hover::after, .game-card:hover::after { transform: scaleX(1); }
+
+input[type="button"]:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.hidden-btn { display: none !important; }
+
+#loadMoreBtn {
+  background: transparent;
+  color: var(--w2);
+  border: 1px solid var(--border2);
+  padding: 0.85rem 3rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  margin: 3rem auto 1rem;
+  display: block;
+  min-width: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+#loadMoreBtn:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: var(--w);
+  background: var(--s2);
+  transform: translateY(-2px);
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--w3);
+  font-size: 14px;
+}
+
+#gameOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.overlay-header {
+  height: 52px;
+  padding: 0 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.overlay-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--w2);
+  font-weight: 600;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.overlay-title::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.overlay-nav-btn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--w2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.overlay-nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--w);
+  border-color: var(--border3);
+  transform: translateY(-1px);
+}
+
+.overlay-nav-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.overlay-nav-divider { width: 1px; height: 22px; background: var(--border2); margin: 0 2px; }
+
+#closeOverlayBtn {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s var(--ease);
+}
+
+#closeOverlayBtn:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.6);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+#gameIframe {
+  flex-grow: 1;
+  width: 100%;
+  height: calc(100% - 52px);
+  border: none;
+  background: #000000;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 100000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-card {
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+  position: relative;
+  animation: popIn 0.3s var(--ease);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--w3);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.modal-close:hover { color: var(--w); }
+
+.input-field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--w);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-color: var(--w2);
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--w);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.modal-btn:hover { opacity: 0.9; }
+
+@media (max-width: 768px) {
+  .main-content { padding: 1rem 1rem 3rem; }
+  #sections-container { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
+  input[type="button"], .game-card { font-size: 11px; padding: 0.75rem; }
+  .version-badge-btn { font-size: 14px; padding: 0.5rem 0.75rem; }
+  .overlay-title { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="sidebar" style="display:none;"></div>
+
+<div class="main-content">
+  
+  <!-- Consolidated Top Bar: Version Badge + Search Bar + Tab Cloak Button -->
+  <div class="top-bar">
+    <div class="version-badge-btn" title="POLY Edition">
+      POLY <span class="version-tag">v1.5</span>
+    </div>
+    
+    <div class="search-wrapper">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input type="text" placeholder="Search games..." id="searchInput" autocomplete="off">
+    </div>
+
+    <button class="nav-btn" id="cloakModalBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Tab Cloak
+    </button>
+  </div>
+
+  <!-- Game Buttons Container -->
+  <div id="sections-container"></div>
+
+  <button id="loadMoreBtn" style="display:none;">Load More Games</button>
+</div>
+
+<!-- Fullscreen Game Overlay -->
+<div id="gameOverlay">
+  <div class="overlay-header">
+    <div class="overlay-title" id="activeGameTitle">GAME LAUNCHER</div>
+    <button class="overlay-nav-btn" id="reloadGameBtn" title="Reload Game">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Reload
+    </button>
+    <button class="overlay-nav-btn" id="popoutGameBtn" title="Open in New Tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      New Tab
+    </button>
+    <button class="overlay-nav-btn" id="fullscreenGameBtn" title="Toggle Fullscreen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      Fullscreen
+    </button>
+    <div class="overlay-nav-divider"></div>
+    <button id="closeOverlayBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Exit
+    </button>
+  </div>
+  <iframe id="gameIframe" src="about:blank" allowfullscreen="true" allow="fullscreen; autoplay; gamepad; focus-without-user-activation"></iframe>
+</div>
+
+<div class="main-content">
+  
+  <!-- Header Bar -->
+  <div class="top-nav">
+    <div class="brand-logo">
+      POLY v1.5
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" id="cloakModalBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Tab Cloak
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Area on Top -->
+  <div class="search-container">
+    <div class="search-wrapper">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input type="text" placeholder="Search games..." id="searchInput" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- Game Buttons Container -->
+  <div id="sections-container"></div>
+
+  <button id="loadMoreBtn" style="display:none;">Load More Games</button>
+</div>
+
+<!-- Fullscreen Game Overlay -->
+<div id="gameOverlay">
+  <div class="overlay-header">
+    <div class="overlay-title" id="activeGameTitle">GAME LAUNCHER</div>
+    <button class="overlay-nav-btn" id="reloadGameBtn" title="Reload Game">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Reload
+    </button>
+    <button class="overlay-nav-btn" id="popoutGameBtn" title="Open in New Tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      New Tab
+    </button>
+    <button class="overlay-nav-btn" id="fullscreenGameBtn" title="Toggle Fullscreen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      Fullscreen
+    </button>
+    <div class="overlay-nav-divider"></div>
+    <button id="closeOverlayBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Exit
+    </button>
+  </div>
+  <iframe id="gameIframe" src="about:blank" allowfullscreen="true"></iframe>
+</div>
+
+<!-- Tab Cloak Modal -->
+<div class="modal-overlay" id="cloakModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">Tab Cloaking</div>
+      <button class="modal-close" id="closeCloakModal">&times;</button>
+    </div>
+    <label style="display:block; font-size:12px; color:var(--w2); margin-bottom:6px;">Custom Tab Title</label>
+    <input type="text" class="input-field" id="cloakTitleInput" placeholder="Google Docs, Canvas, Drive...">
+    
+    <label style="display:block; font-size:12px; color:var(--w2); margin-bottom:6px;">Custom Favicon URL</label>
+    <input type="text" class="input-field" id="cloakIconInput" placeholder="https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico">
+    
+    <button class="modal-btn" id="applyCloakBtn">Apply Cloak</button>
+  </div>
+</div>
+
+<!-- External scripts loaded dynamically -->
+<script src="https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/searchbut.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/game.js"></script>
+
+<script>
+const gameOverlay      = document.getElementById('gameOverlay');
+const gameIframe       = document.getElementById('gameIframe');
+const closeOverlayBtn  = document.getElementById('closeOverlayBtn');
+const activeGameTitle  = document.getElementById('activeGameTitle');
+const searchInput      = document.getElementById('searchInput');
+const loadMoreBtn      = document.getElementById('loadMoreBtn');
+const container        = document.getElementById('sections-container');
+
+let currentLimit = 30;
+let processedButtons = [];
+
+// Catch permissions policy rejections globally
+window.addEventListener('unhandledrejection', (e) => {
+  if (e.reason && (e.reason.name === 'TypeError' || String(e.reason).includes('Permissions policy') || String(e.reason).includes('fullscreen'))) {
+    e.preventDefault();
+  }
+});
+
+function launchGame(name, srcUrlOrHtml) {
+  activeGameTitle.innerText = name.toUpperCase();
+  gameOverlay.style.display = 'flex';
+  
+  if (!srcUrlOrHtml || srcUrlOrHtml === 'about:blank') {
+    gameIframe.src = 'about:blank';
+    return;
+  }
+
+  if (srcUrlOrHtml.startsWith('http')) {
+    gameIframe.src = srcUrlOrHtml;
+  } else if (srcUrlOrHtml.startsWith('<!DOCTYPE') || srcUrlOrHtml.startsWith('<html')) {
+    const blob = new Blob([srcUrlOrHtml], { type: 'text/html' });
+    gameIframe.src = URL.createObjectURL(blob);
+  } else {
+    gameIframe.src = srcUrlOrHtml;
+  }
+}
+
+closeOverlayBtn.addEventListener('click', () => {
+  gameOverlay.style.display = 'none';
+  gameIframe.src = 'about:blank';
+});
+
+document.getElementById('reloadGameBtn').addEventListener('click', () => {
+  const currentSrc = gameIframe.src;
+  gameIframe.src = 'about:blank';
+  setTimeout(() => { gameIframe.src = currentSrc; }, 50);
+});
+
+// Launch game inside an about:blank tab when clicking New Tab
+document.getElementById('popoutGameBtn').addEventListener('click', () => {
+  const currentSrc = gameIframe.src;
+  const title = activeGameTitle.innerText || "Game";
+  const newWin = window.open('about:blank', '_blank');
+  
+  if (!newWin) return;
+
+  let iframeDocHtml = '';
+  try {
+    const doc = gameIframe.contentDocument || (gameIframe.contentWindow && gameIframe.contentWindow.document);
+    if (doc && doc.documentElement && doc.documentElement.innerHTML) {
+      iframeDocHtml = doc.documentElement.innerHTML;
+    }
+  } catch(e) {}
+
+  newWin.document.open();
+  if (iframeDocHtml && iframeDocHtml.length > 50 && !currentSrc.startsWith('http')) {
+    newWin.document.write('<!DOCTYPE html><html>' + iframeDocHtml + '</html>');
+  } else {
+    newWin.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    html, body { margin:0; padding:0; width:100vw; height:100vh; overflow:hidden; background:#000; }
+    iframe { width:100%; height:100%; border:none; display:block; }
+  </style>
+</head>
+<body>
+  <iframe src="${currentSrc !== 'about:blank' ? currentSrc : ''}" allowfullscreen="true" allow="fullscreen; autoplay; gamepad; focus-without-user-activation"></iframe>
+</body>
+</html>`);
+  }
+  newWin.document.close();
+});
+
+document.getElementById('fullscreenGameBtn').addEventListener('click', () => {
+  try {
+    if (!document.fullscreenElement) {
+      const target = gameOverlay || gameIframe;
+      if (target.requestFullscreen) {
+        target.requestFullscreen().catch(() => {});
+      } else if (target.webkitRequestFullscreen) {
+        target.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  } catch(e) {}
+});
+
+// Intercept window.open calls to open inside our game overlay instead of about:blank tab
+window.originalWindowOpen = window.open;
+window.open = function(url, name, specs) {
+  gameOverlay.style.display = 'flex';
+  if (name && typeof name === 'string' && name !== '_blank') {
+    activeGameTitle.innerText = name.toUpperCase();
+  }
+
+  if (url && url !== 'about:blank') {
+    gameIframe.src = url;
+  } else {
+    gameIframe.src = 'about:blank';
+  }
+
+  // Proxy window object so external scripts calling win.document.write() or win.location work inside iframe
+  const getDoc = () => gameIframe.contentDocument || (gameIframe.contentWindow && gameIframe.contentWindow.document);
+
+  return {
+    get document() {
+      const doc = getDoc();
+      if (!doc) return {};
+      return {
+        open: function() { try { doc.open(); } catch(e){} },
+        write: function(html) { try { doc.write(html); } catch(e){} },
+        writeln: function(html) { try { doc.writeln(html); } catch(e){} },
+        close: function() { try { doc.close(); } catch(e){} },
+        get body() { return doc.body; },
+        get head() { return doc.head; },
+        querySelector: function(s) { return doc.querySelector(s); },
+        querySelectorAll: function(s) { return doc.querySelectorAll(s); },
+        createElement: function(t) { return doc.createElement(t); },
+        addEventListener: function(...args) { doc.addEventListener(...args); }
+      };
+    },
+    get location() {
+      return {
+        set href(val) { gameIframe.src = val; },
+        get href() { return gameIframe.src; },
+        replace: function(val) { gameIframe.src = val; },
+        assign: function(val) { gameIframe.src = val; }
+      };
+    },
+    focus: function() {},
+    close: function() { 
+      gameOverlay.style.display = 'none'; 
+      gameIframe.src = 'about:blank'; 
+    }
+  };
+};
+
+function processButton(btn) {
+  if (btn.dataset.processed) return;
+  
+  // Clean prefix 'cl ' if present
+  const clean = btn.value.replace(/^cl\s*/i, '').trim();
+  if (btn.value !== clean) btn.value = clean;
+  
+  btn.dataset.processed = "true";
+  
+  // Wrap button click to set overlay title
+  btn.addEventListener('click', (e) => {
+    const title = btn.value || "GAME";
+    activeGameTitle.innerText = title.toUpperCase();
+  });
+
+  if (!processedButtons.includes(btn)) {
+    processedButtons.push(btn);
+  }
+}
+
+function updatePagination() {
+  const searchTerm = searchInput.value.toLowerCase().trim();
+  const isSearching = searchTerm.length > 0;
+  
+  let visibleCount = 0;
+
+  processedButtons.forEach((btn, index) => {
+    const title = btn.value.toLowerCase();
+    const matchesSearch = title.includes(searchTerm);
+
+    if (matchesSearch) {
+      if (isSearching || visibleCount < currentLimit) {
+        btn.classList.remove('hidden-btn');
+        btn.style.animationDelay = `${(visibleCount % 30) * 0.03}s`;
+      } else {
+        btn.classList.add('hidden-btn');
+      }
+      visibleCount++;
+    } else {
+      btn.classList.add('hidden-btn');
+    }
+  });
+
+  if (isSearching) {
+    loadMoreBtn.style.display = 'none';
+  } else {
+    loadMoreBtn.style.display = visibleCount > currentLimit ? 'block' : 'none';
+  }
+}
+
+loadMoreBtn.addEventListener('click', () => {
+  currentLimit += 30;
+  updatePagination();
+});
+
+searchInput.addEventListener('input', () => {
+  updatePagination();
+});
+
+const cloakModal     = document.getElementById('cloakModal');
+const cloakModalBtn  = document.getElementById('cloakModalBtn');
+const closeCloakBtn  = document.getElementById('closeCloakModal');
+const applyCloakBtn  = document.getElementById('applyCloakBtn');
+
+cloakModalBtn.addEventListener('click', () => cloakModal.style.display = 'flex');
+closeCloakBtn.addEventListener('click', () => cloakModal.style.display = 'none');
+
+applyCloakBtn.addEventListener('click', () => {
+  const title = document.getElementById('cloakTitleInput').value.trim();
+  const icon  = document.getElementById('cloakIconInput').value.trim();
+
+  if (title) {
+    document.title = title;
+  }
+  
+  if (icon) {
+    let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = icon;
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+
+  cloakModal.style.display = 'none';
+});
+
+// Observer to automatically enhance dynamically injected buttons by external scripts
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    mutation.addedNodes.forEach((node) => {
+      if (node.nodeType === 1) {
+        if (node.tagName === 'INPUT' && node.type === 'button') {
+          processButton(node);
+        } else if (node.querySelectorAll) {
+          node.querySelectorAll('input[type="button"]').forEach(processButton);
+        }
+      }
+    });
+  });
+  updatePagination();
+});
+
+observer.observe(container, { childList: true, subtree: true });
+
+// Initial setup
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('#sections-container input[type="button"]').forEach(processButton);
+  updatePagination();
+});
+</script>
+</body>
+</html>
