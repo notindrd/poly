@@ -11,7 +11,7 @@
   window.addEventListener('resize', size);
   (async () => {
     try {
-      const url = 'https://cdn.jsdelivr.net/gh/notindrd/math/gn-math.html?t=' + Date.now();
+      const url = 'https://cdn.jsdelivr.net/gh/notindrd/poly/math/gn-math.html?t=' + Date.now();
       const res = await fetch(url);
       const text = await res.text();
       const frame = document.getElementById('fm');
