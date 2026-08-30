@@ -25,6 +25,24 @@
         allowfullscreen>
     </iframe>
 
+    <!-- Home status widgets -->
+    <aside id="launcher-widgets" class="launcher-widgets" aria-label="System status">
+        <div class="launcher-widget">
+            <span class="launcher-widget-label">Local time</span>
+            <strong id="widget-time">--:--:--</strong>
+            <span id="widget-date">Loading date...</span>
+        </div>
+        <div class="launcher-widget launcher-battery-widget">
+            <span class="launcher-widget-label">Battery</span>
+            <strong id="widget-battery">--%</strong>
+            <span id="widget-battery-state">Checking status...</span>
+        </div>
+        <button type="button" class="panic-button" onclick="panic()" title="Go to Google">
+            <span>Panic</span>
+            <small>Go to Google</small>
+        </button>
+    </aside>
+
     <!-- Floating launcher menu toggle -->
     <button 
         id="menu-toggle" 
@@ -74,9 +92,10 @@
         <!-- Other Stuff Section -->
         <div class="launcher-section">
             <p class="launcher-label">&gt;&gt; Other_Stuff</p>
-            <div class="launcher-empty">
-                [ DIRECTORY EMPTY ]
-            </div>
+            <button onclick="loadSource('french/poly-movies.html')" class="launcher-button launcher-movies-button">
+                <span>[04] Movies</span>
+                <span class="launcher-button-arrow">-&gt;</span>
+            </button>
         </div>
 
         <!-- Custom URL Input -->
@@ -123,6 +142,47 @@
             }
         }
 
+        function panic() {
+            window.location.href = 'https://www.google.com';
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('widget-time').textContent = now.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('widget-date').textContent = now.toLocaleDateString([], {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        function updateBattery(battery) {
+            const percentage = Math.round(battery.level * 100);
+            document.getElementById('widget-battery').textContent = `${percentage}%`;
+            document.getElementById('widget-battery-state').textContent = battery.charging ? 'Charging' : 'On battery';
+        }
+
+        function initWidgets() {
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    updateBattery(battery);
+                    battery.addEventListener('levelchange', () => updateBattery(battery));
+                    battery.addEventListener('chargingchange', () => updateBattery(battery));
+                });
+            } else {
+                document.getElementById('widget-battery').textContent = 'N/A';
+                document.getElementById('widget-battery-state').textContent = 'Unavailable';
+            }
+        }
+
         // Change the iframe's source URL
         function loadSource(url) {
             // Basic URL formatting check to ensure protocol exists
@@ -135,6 +195,7 @@
                 // Must remove srcdoc if returning from the default "Welcome" page
                 iframe.removeAttribute('srcdoc');
                 iframe.src = finalUrl;
+                document.getElementById('launcher-widgets').classList.add('is-hidden');
                 
                 // Optional: Automatically close menu on mobile when a link is clicked
                 if (window.innerWidth < 768 && isMenuOpen) {
@@ -155,6 +216,8 @@
                 loadCustomSource();
             }
         }
+
+        initWidgets();
     </script>
 </body>
 </html>
