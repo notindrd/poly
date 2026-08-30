@@ -3,173 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyberpunk Iframe Switcher</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Poly Launcher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="math/shared.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            font-family: 'Share Tech Mono', monospace;
-            background-color: #050505;
-        }
-        
-        /* Smooth transitions for the sliding menu */
         .menu-transition {
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-        }
-
-        /* Cyberpunk styling elements */
-        .cyber-panel {
-            background: rgba(10, 10, 15, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(0, 255, 255, 0.05);
-        }
-
-        .cyber-btn {
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            color: #ccc;
-            transition: all 0.2s;
-        }
-
-        .cyber-btn:hover {
-            background: rgba(0, 255, 255, 0.2);
-            border-color: rgba(0, 255, 255, 0.8);
-            color: #fff;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-        }
-
-        .cyber-input {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 0, 255, 0.3);
-            color: #0ff;
-        }
-        
-        .cyber-input:focus {
-            border-color: #f0f;
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
-            outline: none;
-        }
-
-        .glitch-text {
-            text-shadow: 2px 0 0 rgba(255,0,255,0.5), -2px 0 0 rgba(0,255,255,0.5);
-        }
-
-        /* Scrollbar styling for the panel */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 255, 0.3);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 255, 255, 0.6);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
         }
     </style>
 </head>
-<body class="bg-black text-gray-300 font-sans h-screen w-screen relative">
+<body class="launcher-body">
 
     <!-- The main Iframe taking up the entire screen -->
     <iframe 
         id="main-iframe" 
-        srcdoc="<!DOCTYPE html><html lang='en'><head><style>@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;display=swap');body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background-color:#050505;font-family:'Share Tech Mono',monospace;background-image:linear-gradient(rgba(0,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,255,0.03) 1px,transparent 1px);background-size:30px 30px;color:#fff;} .container{text-align:center;padding:2rem;border:1px solid rgba(0,255,255,0.2);background:rgba(10,10,15,0.8);box-shadow:0 0 30px rgba(0,255,255,0.1);} h1{font-size:4rem;margin:0 0 1rem 0;color:#0ff;text-shadow:3px 3px 0px rgba(255,0,255,0.6);letter-spacing:4px;} p{font-size:1.2rem;color:rgba(255,255,255,0.7);} .blink{animation:blink 1s step-end infinite;} @keyframes blink{50%{opacity:0;}}</style></head><body><div class='container'><h1>POLY<span class='blink'>_</span></h1><p>&gt;&gt; WELCOME TO POLY, AN IFRAME VIEWER</p><p style='font-size:0.9rem;color:#666;margin-top:2rem;'>[ AWAITING PROTOCOL INITIATION ]</p></div></body></html>" 
-        class="absolute inset-0 w-full h-full border-none bg-black z-0"
+        srcdoc="<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'><link rel='stylesheet' href='math/shared.css'></head><body class='launcher-welcome'><div class='launcher-welcome-card'><h1>POLY</h1><p>Choose a destination from the launcher to get started.</p><p class='launcher-welcome-meta'>Ready when you are</p></div></body></html>"
+        class="launcher-frame"
         title="Main Content View"
         allowfullscreen>
     </iframe>
 
-    <!-- Floating Toggle Button - Made Highly Visible & Cyberpunk -->
+    <!-- Floating launcher menu toggle -->
     <button 
         id="menu-toggle" 
         onclick="toggleMenu()"
-        class="fixed bottom-4 right-4 z-50 bg-gray-900 border border-cyan-400 text-cyan-400 px-4 py-2 rounded-sm font-mono text-sm uppercase tracking-widest hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_15px_rgba(0,255,255,0.3)] flex items-center gap-2 group cursor-pointer"
+        class="launcher-toggle"
         title="Toggle Shortcuts">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
         <span>Menu</span>
     </button>
 
-    <!-- Floating Control Panel - Cyberpunk Theme -->
+    <!-- Floating control panel -->
     <div 
         id="control-panel" 
-        class="fixed bottom-16 right-4 z-40 p-6 w-80 cyber-panel menu-transition translate-x-0 opacity-100 rounded-sm max-h-[85vh] overflow-y-auto">
+        class="launcher-panel menu-transition">
         
-        <h2 class="text-lg font-bold mb-6 flex items-center gap-2 glitch-text uppercase tracking-widest border-b border-gray-800 pb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <h2 class="launcher-heading">
+            <svg xmlns="http://www.w3.org/2000/svg" class="launcher-heading-mark" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Shortcuts
-            <button onclick="toggleMenu()" class="ml-auto text-gray-500 hover:text-fuchsia-500 transition-colors focus:outline-none" title="Close">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button onclick="toggleMenu()" class="launcher-close" title="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </h2>
         
         <!-- Games Section -->
-        <div class="space-y-3 mb-6">
-            <p class="text-xs text-gray-500 uppercase tracking-widest mb-3">&gt;&gt; Games</p>
-            <button onclick="loadSource('https://zv1y2i8p.play.gamezop.com/g/rkWfy2pXq0J')" class="w-full text-left px-4 py-2 text-sm cyber-btn flex justify-between items-center group">
+        <div class="launcher-section">
+            <p class="launcher-label">&gt;&gt; Games</p>
+            <button onclick="loadSource('https://zv1y2i8p.play.gamezop.com/g/rkWfy2pXq0J')" class="launcher-button">
                 <span>[01] Tower Crash</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">-&gt;</span>
+                <span class="launcher-button-arrow">-&gt;</span>
             </button>
-            <button onclick="loadSource('https://zv1y2i8p.play.gamezop.com/g/r16S_CylQe')" class="w-full text-left px-4 py-2 text-sm cyber-btn flex justify-between items-center group">
+            <button onclick="loadSource('https://zv1y2i8p.play.gamezop.com/g/r16S_CylQe')" class="launcher-button">
                 <span>[02] Solitaire</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">-&gt;</span>
+                <span class="launcher-button-arrow">-&gt;</span>
             </button>
-            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/gn-math.svg')" class="w-full text-left px-4 py-2 text-sm cyber-btn flex justify-between items-center group">
+            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/gn-math.svg')" class="launcher-button">
                 <span>[03] Gn-math</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">-&gt;</span>
+                <span class="launcher-button-arrow">-&gt;</span>
             </button>
-            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/luminsdk.svg')" class="w-full text-left px-4 py-2 text-sm cyber-btn flex justify-between items-center group">
+            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/luminsdk.svg')" class="launcher-button">
                 <span>[04] Lumin</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">-&gt;</span>
+                <span class="launcher-button-arrow">-&gt;</span>
             </button>
-            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/ugs.svg')" class="w-full text-left px-4 py-2 text-sm cyber-btn flex justify-between items-center group">
+            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/ugs.svg')" class="launcher-button">
                 <span>[05] UGS</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">-&gt;</span>
+                <span class="launcher-button-arrow">-&gt;</span>
             </button>
         </div>
 
         <!-- Other Stuff Section -->
-        <div class="space-y-3 mb-8">
-            <p class="text-xs text-gray-500 uppercase tracking-widest mb-3">&gt;&gt; Other_Stuff</p>
-            <div class="text-xs text-gray-600 font-mono italic pl-4 border-l border-gray-800">
+        <div class="launcher-section">
+            <p class="launcher-label">&gt;&gt; Other_Stuff</p>
+            <div class="launcher-empty">
                 [ DIRECTORY EMPTY ]
             </div>
         </div>
 
         <!-- Custom URL Input -->
-        <div class="mb-6">
-            <p class="text-xs text-gray-500 uppercase tracking-widest mb-3">&gt;&gt; Manual Override</p>
-            <div class="flex gap-2">
+        <div class="launcher-section">
+            <p class="launcher-label">&gt;&gt; Manual Override</p>
+            <div class="launcher-input-row">
                 <input 
                     type="text" 
                     id="custom-url" 
                     placeholder="ENTER URL..." 
-                    class="flex-1 px-3 py-2 cyber-input text-xs"
+                    class="launcher-input"
                     onkeypress="handleKeyPress(event)">
                 <button 
                     onclick="loadCustomSource()" 
-                    class="bg-fuchsia-600/20 border border-fuchsia-500 text-fuchsia-400 hover:bg-fuchsia-500 hover:text-black px-3 py-2 text-xs transition-colors focus:outline-none">
+                    class="launcher-exec">
                     EXEC
                 </button>
             </div>
         </div>
 
         <!-- Disclaimer -->
-        <div class="border-l-2 border-red-500 bg-red-900/20 p-3 mt-4">
-            <p class="text-[10px] text-red-400 font-mono uppercase">
-                <span class="font-bold text-red-500">SYS_WARN:</span> Some external domains refuse iframe connections. Connection resets may occur.
+        <div class="launcher-warning">
+            <p>
+                <strong>SYS_WARN:</strong> Some external domains refuse iframe connections. Connection resets may occur.
             </p>
         </div>
     </div>
@@ -185,12 +124,10 @@
             isMenuOpen = !isMenuOpen;
             if (isMenuOpen) {
                 // Show menu
-                panel.classList.remove('translate-x-[150%]', 'opacity-0');
-                panel.classList.add('translate-x-0', 'opacity-100');
+                panel.classList.remove('is-hidden');
             } else {
                 // Hide menu
-                panel.classList.add('translate-x-[150%]', 'opacity-0');
-                panel.classList.remove('translate-x-0', 'opacity-100');
+                panel.classList.add('is-hidden');
             }
         }
 
