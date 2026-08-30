@@ -400,18 +400,19 @@ input[type="button"]:hover,
 
 .launcher-widgets {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
+  top: calc(50% + 150px);
+  left: 50%;
   z-index: 45;
-  width: min(250px, calc(100vw - 2rem));
+  width: min(420px, calc(100vw - 2rem));
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+  transform: translateX(-50%);
   transition: transform 0.35s var(--ease), opacity 0.25s ease;
 }
 
 .launcher-widgets.is-hidden {
-  transform: translateY(-1rem);
+  transform: translateX(-50%) translateY(-1rem);
   opacity: 0;
   pointer-events: none;
 }
@@ -746,8 +747,8 @@ input[type="button"]:hover,
   }
 
   .launcher-widgets {
-    top: 0.75rem;
-    left: 0.75rem;
-    width: min(230px, calc(100vw - 1.5rem));
+    top: calc(50% + 145px);
+    left: 50%;
+    width: min(340px, calc(100vw - 1.5rem));
   }
 }
