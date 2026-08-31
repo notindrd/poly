@@ -75,15 +75,15 @@
         <!-- Games Section -->
         <div class="launcher-section">
             <p class="launcher-label">&gt;&gt; Games</p>
-            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/gn-math.svg')" class="launcher-button">
+            <button onclick="loadSource('math/gn-math.html')" class="launcher-button">
                 <span>[01] Gn-math</span>
                 <span class="launcher-button-arrow">-&gt;</span>
             </button>
-            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/luminsdk.svg')" class="launcher-button">
+            <button onclick="loadSource('math/luminsdk.html')" class="launcher-button">
                 <span>[02] Lumin</span>
                 <span class="launcher-button-arrow">-&gt;</span>
             </button>
-            <button onclick="loadSource('https://cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/ugs.svg')" class="launcher-button">
+            <button onclick="loadSource('math/ugs.html')" class="launcher-button">
                 <span>[03] UGS</span>
                 <span class="launcher-button-arrow">-&gt;</span>
             </button>
@@ -91,14 +91,12 @@
 
         <!-- Other Stuff Section -->
         <div class="launcher-section">
-            <p class="launcher-label">&gt;&gt; Other_Stuff</p>
-            <button onclick="loadSource('cdn.jsdelivr.net/gh/notindrd/poly@main/french/poly-movies.html/')" class="launcher-button launcher-movies-button">
+            <button onclick="loadSource('french/poly-movies.html')" class="launcher-button launcher-movies-button">
                 <span>[04] Movies</span>
                 <span class="launcher-button-arrow">-&gt;</span>
             </button>
 
-            <p class="launcher-label">&gt;&gt; Other_Stuff</p>
-            <button onclick="loadSource('cdn.jsdelivr.net/gh/notindrd/poly@main/loadable-svg/arctic.svg')" class="launcher-button launcher-movies-button">
+            <button onclick="loadSource('math/arctic.html')" class="launcher-button launcher-movies-button">
                 <span>[05] Arctic</span>
                 <span class="launcher-button-arrow">-&gt;</span>
             </button>
@@ -191,10 +189,15 @@
 
         // Change the iframe's source URL
         function loadSource(url) {
-            // Basic URL formatting check to ensure protocol exists
-            let finalUrl = url.trim();
-            if (finalUrl !== '' && !finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-                finalUrl = 'https://' + finalUrl;
+            const requestedUrl = url.trim();
+            let finalUrl = requestedUrl;
+
+            if (/^(https?:\/\/|\/\/|about:|data:)/i.test(requestedUrl)) {
+                finalUrl = requestedUrl;
+            } else if (/^[a-z0-9.-]+\.[a-z]{2,}(?=\/|$)/i.test(requestedUrl)) {
+                finalUrl = 'https://' + requestedUrl;
+            } else if (requestedUrl) {
+                finalUrl = new URL(requestedUrl, window.location.href).href;
             }
             
             if (finalUrl) {
